@@ -1,13 +1,10 @@
-import { MiNote, MiUser } from "./misskeyApi.ts"
+import { MiInstance, MiNote, MiUser } from "./misskeyObj.ts"
 
-export class MiFetcher {
-    private host: string
-    private token: string
-
-    constructor(host: string, token: string) {
-        this.host = host
-        this.token = token
-    }
+export class MiRequester {
+    constructor(
+        private host: string,
+        private token: string
+    ) {}
 
     async getUser(userId: string): Promise<MiUser> {
         return await this.fetch("users/show", { userId })
@@ -29,7 +26,7 @@ export class MiFetcher {
         }
     }
 
-    async showRemoteUsers(limit = 20): Promise<MiUser[]> {
+    async getRecentUsers(limit: number): Promise<MiUser[]> {
         return await this.fetch("admin/show-users", {
             sort: "+updatedAt",
             state: "available",
@@ -41,10 +38,25 @@ export class MiFetcher {
         })
     }
 
+    async getInstanceInfo(host: string): Promise<MiInstance> {
+        return await this.fetch("federation/show-instance", { host })
+    }
+
+    async suspendUser(userId: string): Promise<void> {
+        await this.fetch("admin/suspend-user", { userId })
+    }
+
+    async deleteNote(noteId: string): Promise<void> {
+        await this.fetch("notes/delete", { noteId })
+    }
+
+    async blockInstance(host: string): Promise<void> {}
+
+    async unblockInstance(host: string): Promise<void> {}
 
     private async fetch<T>(path: string, body: Record<string, unknown>): Promise<T> {
         body.i = this.token
-        return await fetch(this.host + "/api/" + path, {
+        return await fetch("https://" + this.host + "/api/" + path, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

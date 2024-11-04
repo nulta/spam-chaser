@@ -14,6 +14,9 @@ export type MiUser = {
     
     createdAt: string
     updatedAt: string | null
+    followersCount: number
+    followingCount: number
+    notesCount: number
 }
 
 export type MiNote = {
@@ -33,4 +36,18 @@ export type MiNote = {
     createdAt: string
     reply: MiNote | null
     renote: MiNote | null
+}
+
+export type MiInstance = {
+    id: string
+    host: string
+    name: string
+
+    followersCount: number
+    followingCount: number
+    usersCount: number
+    
+    isBlocked: boolean
+    isSilenced: boolean
+    moderationNote: string | null
 }
