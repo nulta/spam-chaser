@@ -1,7 +1,10 @@
+import { Logger } from "../lib/logger.ts";
 import { MiUser, MiNote } from "../lib/misskeyObj.ts"
 import { MiRequester } from "../lib/misskeyReq.ts"
 
 export class Judge {
+    private phase2Cache = new Set<string>()
+
     constructor(
         private requester: MiRequester
     ) {}
@@ -33,7 +36,7 @@ export class Judge {
 
         const susFactor = [
             user.followersCount < 20,
-            this.ageInDays(user) > 3,
+            this.ageInDays(user) < 3,
             !user.avatarBlurhash,!user.name||user.username ==
             user.name,!user.description,
             this.textHasHighEntropy(user.username),
@@ -44,17 +47,23 @@ export class Judge {
     }
 
     private async checkUserPhase2(user: MiUser) {
+        if (this.phase2Cache.has(user.id)) {
+            return false
+        }
+
         const [localFollowers, followers] = await Promise.all([
             this.requester.getUserFollowers(user.id, 3, true),
             this.requester.getUserFollowers(user.id, 50, false),
         ])
 
         if (localFollowers.length >= 1) {
+            this.phase2Cache.add(user.id)
             return false
         }
 
         const trustedFollowers = followers.filter(f => this.ageInDays(f) < 15)
         if (trustedFollowers.length >= 2) {
+            this.phase2Cache.add(user.id)
             return false
         }
 

@@ -43,11 +43,11 @@ export class MiRequester {
     }
 
     async suspendUser(userId: string): Promise<void> {
-        await this.fetch("admin/suspend-user", { userId })
+        await this.fetch("admin/suspend-user", { userId }, true)
     }
 
     async deleteNote(noteId: string): Promise<void> {
-        await this.fetch("notes/delete", { noteId })
+        await this.fetch("notes/delete", { noteId }, true)
     }
 
     // TODO
@@ -56,7 +56,7 @@ export class MiRequester {
     // TODO
     async unblockInstance(host: string): Promise<void> {}
 
-    private async fetch<T>(path: string, body: Record<string, unknown>): Promise<T> {
+    private async fetch<T>(path: string, body: Record<string, unknown>, ignoreRes = false): Promise<T> {
         body.i = this.token
         return await fetch("https://" + this.host + "/api/" + path, {
             method: "POST",
@@ -64,6 +64,6 @@ export class MiRequester {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(body)
-        }).then(res => res.json())
+        }).then(res => !ignoreRes ? res.json() : res)
     }
 }

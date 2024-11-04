@@ -1,0 +1,5 @@
+{
+    "tasks": {
+        "start": "deno run --allow-net --allow-read=config.json --allow-write=config.json src/main.ts"
+    }
+}
