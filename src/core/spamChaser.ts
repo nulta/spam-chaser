@@ -67,6 +67,13 @@ export class SpamChaser {
         const users = await this.radar.find(processUsers)
         this.processedUsers += users.length
 
+        if (!Array.isArray(users)) {
+            // what??
+            Logger.warn("Got invalid response from radar:")
+            Logger.warn(users)
+            return
+        }
+
         for (const user of users) {
             promises.push(this.judge.isBadUser(user).then(isBad => {
                 if (isBad) {
