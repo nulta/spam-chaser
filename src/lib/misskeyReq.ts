@@ -1,3 +1,4 @@
+import { Logger } from "./logger.ts";
 import { MiInstance, MiNote, MiUser } from "./misskeyObj.ts"
 
 export class MiRequester {
@@ -43,11 +44,15 @@ export class MiRequester {
     }
 
     async suspendUser(userId: string): Promise<void> {
-        await this.fetch("admin/suspend-user", { userId }, true)
+        await this.fetch("admin/suspend-user", { userId }, true).catch((reason) => {
+            Logger.warn("Failed to suspend user %s: %s", userId, reason)
+        })
     }
 
     async deleteNote(noteId: string): Promise<void> {
-        await this.fetch("notes/delete", { noteId }, true)
+        await this.fetch("notes/delete", { noteId }, true).catch((reason) => {
+            Logger.warn("Failed to delete note %s: %s", noteId, reason)
+        })
     }
 
     // TODO
