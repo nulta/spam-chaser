@@ -1,8 +1,11 @@
 import { loadConfig } from "./cfg.ts"
 import { SpamChaser } from "./core/spamChaser.ts"
 
-console.log(" == SpamChaser == ")
-console.log(" rev 1            ")
+console.log(" ==  ")
+console.log(" ==  SpamChaser")
+console.log(" ==  github.com/nulta/spam-chaser")
+console.log(" ==  ")
+console.log(" --  Version: 1.0")
 console.log("")
 
 const config = loadConfig()

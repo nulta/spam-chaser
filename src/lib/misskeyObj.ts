@@ -2,7 +2,7 @@ export type MiUser = {
     id: string
     name: string
     username: string
-    instance: string | null
+    host: string | null
     isSuspended: boolean
 
     avatarUrl: string

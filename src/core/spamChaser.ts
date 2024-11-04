@@ -33,6 +33,7 @@ export class SpamChaser {
         Logger.info("Instance: %c%s", "color: yellow", this.config.host)
 
         await this.tick(100)
+        Logger.info("Initial tick successful.")
 
         this.reportLoop()
         await this.tickLoop()
@@ -56,7 +57,7 @@ export class SpamChaser {
     private async reportLoop() {
         while (true) {
             await new Promise(resolve => setTimeout(resolve, 10 * 1000))
-            Logger.info("Processed %c%d%c users.", "color: yellow", this.processedUsers, "color: unset")
+            Logger.info("Checked %c%d users%c.", "color: yellow", this.processedUsers, "color: unset")
             this.processedUsers = 0
         }
     }

@@ -50,8 +50,10 @@ export class MiRequester {
         await this.fetch("notes/delete", { noteId })
     }
 
+    // TODO
     async blockInstance(host: string): Promise<void> {}
 
+    // TODO
     async unblockInstance(host: string): Promise<void> {}
 
     private async fetch<T>(path: string, body: Record<string, unknown>): Promise<T> {

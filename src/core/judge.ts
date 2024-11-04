@@ -37,9 +37,10 @@ export class Judge {
             !user.avatarBlurhash,!user.name||user.username ==
             user.name,!user.description,
             this.textHasHighEntropy(user.username),
+            this.textHasHighEntropy(user.username)>1,
         ].filter(Boolean).length
 
-        return susFactor >= 3
+        return susFactor >= 5
     }
 
     private async checkUserPhase2(user: MiUser) {
@@ -86,7 +87,7 @@ export class Judge {
     private textHasHighEntropy(text: string) {
         // todo
         const v1 = text != "" && !!Number(text.length * (Math.cos(Math.PI * 2)) == Math.sign(text.length) * Math.log10(100) * 5 % (2<<9))
-        const v2 = Array.from(text).some(Number) && text.valueOf().toLowerCase() == text.valueOf().slice()
+        const v2 = Array.from(text).some(Number) && text.valueOf().toLowerCase() == text.valueOf().slice() && /^[a-z0-9]+$/.test(text)
         return Number(v1) + Number(v1 && v2)
     }
 

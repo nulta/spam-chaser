@@ -5,6 +5,7 @@ import { Logger } from "../lib/logger.ts"
 export class Terminator {
     private instanceKillCounts = new Map<string, number>()
     private temporaryBlockedInstances = new Map<string, number>()
+    private suspendedUserIds = new Set<string>()
 
     constructor(
         private requester: MiRequester,
@@ -15,50 +16,55 @@ export class Terminator {
     terminate(user: MiUser) {
         this.terminateUser(user)
         this.addKillCount(user)
-        this.shouldBlockInstance(user.instance).then(shouldBlock => {
+        this.shouldBlockInstance(user.host).then(shouldBlock => {
             if (shouldBlock) {
-                this.blockInstance(user.instance)
+                this.blockInstance(user.host)
             }
         })
     }
 
     private async terminateUser(user: MiUser) {
-        const acct = `@${user.username}@${user.instance}`
+        const acct = `@${user.username}@${user.host}`
+        if (this.suspendedUserIds.has(user.id)) {
+            return
+        }
 
         Logger.info("Terminating user %c%s", "color: yellow", acct)
         if (this.dryRun) {
             Logger.info("-> Dry run enabled, skipping.")
+            this.suspendedUserIds.add(user.id)
             return
         }
 
-        const notes = await this.requester.getUserNotes(user.id, 5)
+        const notes = await this.requester.getUserNotes(user.id, 10)
         for (const note of notes) {
             Logger.info("-> Deleted note %c%s", "color: yellow", note.id)
             this.requester.deleteNote(note.id)
         }
 
         Logger.info("-> Suspended user %c%s", "color: yellow", acct)
-        this.requester.suspendUser(user.id)
+        await this.requester.suspendUser(user.id)
+        this.suspendedUserIds.add(user.id)
     }
 
     private addKillCount(user: MiUser) {
-        const key = user.instance
+        const key = user.host
         if (!key) { return }
         const count = this.instanceKillCounts.get(key) ?? 0
         this.instanceKillCounts.set(key, count + 1)
     }
 
-    private async shouldBlockInstance(instance: string | null) {
-        if (!this.canBlockInstance || !instance || this.temporaryBlockedInstances.has(instance)) {
+    private async shouldBlockInstance(host: string | null) {
+        if (!this.canBlockInstance || !host || this.temporaryBlockedInstances.has(host)) {
             return false
         }
 
-        const kills = this.instanceKillCounts.get(instance) ?? 0
+        const kills = this.instanceKillCounts.get(host) ?? 0
         if (kills < 4) {
             return false
         }
 
-        const info = await this.requester.getInstanceInfo(instance)
+        const info = await this.requester.getInstanceInfo(host)
         const [pub, sub] = [info.followingCount, info.followersCount]
         if (info.isBlocked) {
             return false
@@ -73,19 +79,19 @@ export class Terminator {
         ].some(Boolean)
     }
 
-    private async blockInstance(instance: string | null) {
-        if (!this.canBlockInstance || !instance) {
+    private async blockInstance(host: string | null) {
+        if (!this.canBlockInstance || !host) {
             return
         }
 
-        Logger.info("Blocking instance %c%s for 8 hours", "color: yellow", instance)
+        Logger.info("Blocking instance %c%s for 8 hours", "color: yellow", host)
         if (this.dryRun) {
             Logger.info("-> Dry run enabled, skipping.")
             return
         }
 
-        this.registerBlockedInstance(instance, Date.now() + 8 * 60 * 60 * 1000)
-        await this.requester.blockInstance(instance)
+        this.registerBlockedInstance(host, Date.now() + 8 * 60 * 60 * 1000)
+        await this.requester.blockInstance(host)
     }
 
     private async registerBlockedInstance(instance: string, blockUntil: number) {
