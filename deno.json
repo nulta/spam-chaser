@@ -1,5 +1,8 @@
 {
     "tasks": {
-        "start": "deno run --allow-net --allow-read=config.json --allow-write=config.json src/main.ts"
+        "start": "deno run --allow-net --allow-read=config.json --allow-write=config.json src/main.ts",
+        "build-windows": "deno compile --target=x86_64-pc-windows-msvc --output=bin/spam-chaser.exe --allow-net --allow-read=config.json --allow-write=config.json src/main.ts",
+        "build-linux": "deno compile --target=x86_64-unknown-linux-gnu --output=bin/spam-chaser --allow-net --allow-read=config.json --allow-write=config.json src/main.ts",
+        "build": "deno task build-windows && deno task build-linux"
     }
 }
