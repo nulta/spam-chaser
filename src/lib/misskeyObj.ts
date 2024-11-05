@@ -5,12 +5,12 @@ export type MiUser = {
     host: string | null
     isSuspended: boolean
 
-    avatarUrl: string
-    avatarBlurhash: string
+    avatarUrl: string | null
+    avatarBlurhash: string | null
     avatarDecorations?: string[]
     isCat: boolean
     isBot: boolean
-    description: string
+    description: string | null
     
     createdAt: string
     updatedAt: string | null
@@ -23,7 +23,7 @@ export type MiNote = {
     id: string
     text: string | null
     cw: string | null
-    mentions: string[]  // userid[]
+    mentions?: string[]  // userid[]
 
     userId: string
     user: MiUser
