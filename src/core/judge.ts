@@ -1,4 +1,3 @@
-import { Logger } from "../lib/logger.ts";
 import { MiUser, MiNote } from "../lib/misskeyObj.ts"
 import { MiRequester } from "../lib/misskeyReq.ts"
 
@@ -87,7 +86,7 @@ export class Judge {
     }
 
     private noteHarmfulness(note: MiNote) {
-        const mentions = note.mentions.length
+        const mentions = note.mentions?.length ?? 0
         let score = [0, 2, 3, 4, 5][mentions] ?? 5
         if (note.reply) { score /= 2 }
         return score
