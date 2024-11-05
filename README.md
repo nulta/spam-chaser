@@ -7,7 +7,7 @@
 - 기타 노트의 내용 변화에 관계없이 스팸을 **추격**해서 자동으로 정지합니다.
 
 ## 사용 방법
-1. [여기서 최신 실행 파일을 내려받습니다.](https://github.com/nulta/spam-chaser/releases)
+1. [여기서 최신 실행 파일을 내려받습니다.](https://github.com/nulta/spam-chaser/releases)]
 2. 실행하고, 화면의 지시에 따라 최초 설정을 합니다.
 3. 설정을 마치면 추격기가 자동으로 시작됩니다.
 
