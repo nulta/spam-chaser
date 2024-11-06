@@ -12,6 +12,7 @@ import { Terminator } from "./terminator.ts"
 export class SpamChaser {
     private readonly tickDelay = 1000
     private readonly reportDelay = 60 * 1000
+    private readonly errorWaitDelay = 20 * 1000
 
     private config: Config
     private requester: MiRequester
@@ -48,15 +49,15 @@ export class SpamChaser {
             } catch (e) {
                 Logger.error("Error occured in tick loop!")
                 Logger.error(e)
-                Logger.info("Waiting 20 seconds before the next tick.")
-                await new Promise(resolve => setTimeout(resolve, 20 * 1000))
+                Logger.info(`Waiting ${this.errorWaitDelay / 1000} seconds before the next tick.`)
+                await new Promise(resolve => setTimeout(resolve, this.errorWaitDelay))
             }
         }
     }
 
     private async reportLoop() {
         while (true) {
-            await new Promise(resolve => setTimeout(resolve, 10 * 1000))
+            await new Promise(resolve => setTimeout(resolve, this.reportDelay))
             Logger.info("Checked %c%d users%c.", "color: yellow", this.processedUsers, "color: unset")
             this.processedUsers = 0
         }
