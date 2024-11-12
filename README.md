@@ -1,4 +1,4 @@
-# 스팸 추격기 v1.0.1
+# 스팸 추격기 v1.0.2
 스팸 요격기(`fedi_findandkillspam`)의 계승작입니다.
 
 - Misskey 전용입니다. 아직은.
@@ -34,3 +34,4 @@
 ## 변경 로그
 - v1.0: 출시.
 - v1.0.1: `Judge.noteHarmfulness`에서 발생하는 undefined 참조 오류 수정.
+- v1.0.2: **오탐 수정**.
