@@ -5,7 +5,7 @@ console.log(" ==  ")
 console.log(" ==  SpamChaser")
 console.log(" ==  github.com/nulta/spam-chaser")
 console.log(" ==  ")
-console.log(" --  Version: 1.0.1")
+console.log(" --  Version: 1.0.2")
 console.log("")
 
 const config = loadConfig()
