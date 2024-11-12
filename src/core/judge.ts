@@ -70,25 +70,25 @@ export class Judge {
     }
 
     private async checkUserNotes(user: MiUser) {
-        const notes = await this.requester.getUserNotes(user.id, 10)
-        let recentNotes = notes
-            .filter(n => this.ageInDays(n) < 3/24)
+        const notes = await this.requester.getUserNotes(user.id, 20)
 
         // then it's invisible
-        if (recentNotes.length == 0) { return true }
+        if (notes.length == 0) { return true }
 
-        recentNotes = recentNotes.filter(n => !n.renote)
-        const avgNoteScore = recentNotes
+        const avgNoteScore = notes
             .map(n => this.noteHarmfulness(n))
-            .reduce((a, b) => a + b, 0) / (recentNotes.length || 1)
+            .reduce((a, b) => a + b, 0) / (notes.length || 1)
 
         return avgNoteScore >= 2
     }
 
     private noteHarmfulness(note: MiNote) {
+        if (note.renote) { return 0 }
         const mentions = note.mentions?.length ?? 0
         let score = [0, 2, 3, 4, 5][mentions] ?? 5
         if (note.reply) { score /= 2 }
+        if (note.renoteCount || note.repliesCount || note.reactionsCount) { score -= 1 }
+        if (note.renoteCount + note.repliesCount + note.reactionsCount > 4) { score -= 1 }
         return score
     }
 
