@@ -66,7 +66,7 @@ export class SpamChaser {
     private async tick(processUsers = 20) {
         const promises: Promise<unknown>[] = []
         const users = await this.radar.find(processUsers)
-        this.processedUsers += users.length
+        this.processedUsers += users.length || 0
 
         if (!Array.isArray(users)) {
             // what??
