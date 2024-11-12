@@ -11,7 +11,7 @@ import { Terminator } from "./terminator.ts"
  */
 export class SpamChaser {
     private readonly tickDelay = 1000
-    private readonly reportDelay = 60 * 1000
+    private readonly reportDelay = 120 * 1000
     private readonly errorWaitDelay = 20 * 1000
 
     private config: Config
